@@ -9,13 +9,16 @@ public class WeatherStatusRequest {
 
     private String units;
 
-    public WeatherStatusRequest(String cityName, String units) { }
+    public WeatherStatusRequest(String cityName, String units) {
+        this.cityName = cityName;
+        this.units = units;
+    }
 
     public String getCityName() {
-        return null;
+        return cityName;
     }
 
     public String getUnits() {
-        return null;
+        return units;
     }
 }

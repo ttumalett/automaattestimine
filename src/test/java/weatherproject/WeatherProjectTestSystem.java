@@ -1,4 +1,5 @@
 package weatherproject;
+import org.json.JSONException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import utility.HttpUtility;
@@ -7,6 +8,7 @@ import weather.ForecastReport;
 import weather.WeatherStatusRequest;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -28,26 +30,32 @@ public class WeatherProjectTestSystem {
 
     private static ForecastReport forecastReport;
 
+    private static List<Double> exampleTemperatures;
+
     @BeforeClass
-    public static void setUpAllTests() {
+    public static void setUpAllTests() throws JSONException {
         request = new WeatherStatusRequest("Tallinn", "metric");
         currentWeatherRep = new CurrentWeatherReport(request);
         forecastReport = new ForecastReport(request);
-        forecastReport.sortTemperaturesByDay();
+        exampleTemperatures = new ArrayList<>();
+        exampleTemperatures.add(0.0);
+        exampleTemperatures.add(24.5);
+        exampleTemperatures.add(-12.4);
+        exampleTemperatures.add(5.2);
     }
 
     @Test
-    public void testIfCoordinatesAreValid() {
+    public void testIfCoordinatesAreValid() throws JSONException {
         String[] coordinates = currentWeatherRep.getCoordinates().split(":");
-        double lon = Double.valueOf(coordinates[0]);
-        double lat = Double.valueOf(coordinates[1]);
+        double lon = Double.valueOf(coordinates[1]);
+        double lat = Double.valueOf(coordinates[0]);
         boolean areValid = (lon < LONGITUDE_MAX_LIMIT && lon > -1 * LONGITUDE_MAX_LIMIT
                 && lat < LATITUDE_MAX_LIMIT && lat > -1 * LATITUDE_MAX_LIMIT);
         assertTrue(areValid);
     }
 
     @Test
-    public void testIfTemperatureIsValid() {
+    public void testIfTemperatureIsValid() throws JSONException {
         boolean isValid = (currentWeatherRep.getCurrentTemperature() < 70
                 && currentWeatherRep.getCurrentTemperature() > -100);
         assertTrue(isValid);
@@ -55,33 +63,24 @@ public class WeatherProjectTestSystem {
 
     @Test
     public void testForecastHighestTemperatureInADay() {
-        List<Integer> temperatures = forecastReport.getTemperaturesOfTheDay();
-        int highestTemp = 0;
-        for (Integer temp : temperatures) {
-            highestTemp = (temp > highestTemp) ? temp : highestTemp;
-        }
-        assertEquals(highestTemp, forecastReport.getHighestTemperatureOfTheDay());
+        assertEquals(24.5, forecastReport.getHighestTemperatureOfTheDay(exampleTemperatures), 0.0);
     }
 
     @Test
     public void testForecastLowestTemperatureInADay() {
-        List<Integer> temperatures = forecastReport.getTemperaturesOfTheDay();
-        int lowestTemp = 100;
-        for (Integer temp : temperatures) {
-            lowestTemp = (temp < lowestTemp) ? temp : lowestTemp;
-        }
-        assertEquals(lowestTemp, forecastReport.getLowestTemperatureOfTheDay());
+        assertEquals(-12.4, forecastReport.getLowestTemperatureOfTheDay(exampleTemperatures), 0.0);
     }
 
     @Test
-    public void testIfRequestedCityIsInResponse() {
+    public void testIfRequestedCityIsInResponse() throws JSONException {
         assertEquals(currentWeatherRep.getCity(), request.getCityName());
     }
 
     @Test
     public void testConnectionToAPI() {
         try {
-            String url = "";
+            String url = "http://api.openweathermap.org/data/2.5/weather?q=Tallinn"
+                    + "&APPID=2b7472354d73a60236402c0214cd02ce";
             HttpURLConnection connection = HttpUtility.makeURLConnection(url);
             assertEquals(connection.getResponseCode(), HTTP_CODE_SUCCESS);
         } catch (IOException e) {
