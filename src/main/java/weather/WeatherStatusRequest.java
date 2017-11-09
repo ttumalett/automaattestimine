@@ -1,4 +1,6 @@
 package weather;
+import utility.SystemUtility;
+import java.nio.file.Paths;
 
 /**
  * A request for an overview of the weather in the specified city.
@@ -9,9 +11,17 @@ public class WeatherStatusRequest {
 
     private String units;
 
-    public WeatherStatusRequest(String cityName, String units) {
+    public WeatherStatusRequest() {
+        units = "metric";
+        cityName = SystemUtility.readCityFromFile();
+        if (cityName == null) {
+            cityName = SystemUtility.askForCityName();
+        }
+    }
+
+    public WeatherStatusRequest(String cityName) {
         this.cityName = cityName;
-        this.units = units;
+        this.units = "metric";
     }
 
     public String getCityName() {
@@ -20,5 +30,9 @@ public class WeatherStatusRequest {
 
     public String getUnits() {
         return units;
+    }
+
+    public String getHi() {
+        return "hi";
     }
 }

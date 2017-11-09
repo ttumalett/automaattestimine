@@ -3,11 +3,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utility.HttpUtility;
+import utility.SystemUtility;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -103,12 +102,6 @@ public class ForecastReport {
         return " |Maximum temperature: " + max + "; minimum temperature: " + min + "|\n";
     }
 
-    public String formatDate(String day) throws ParseException {
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(day);
-        String formattedDate = new SimpleDateFormat("dd/MM/yyyy").format(date);
-        return formattedDate;
-    }
-
     public String getForecastReport() throws JSONException, ParseException {
         get3DaysDates();
         List<Double> day1Temperatures = getTemperaturesOfTheDay(day1);
@@ -120,7 +113,8 @@ public class ForecastReport {
         double day1min = getLowestTemperatureOfTheDay(day1Temperatures);
         double day2min = getLowestTemperatureOfTheDay(day2Temperatures);
         double day3min = getLowestTemperatureOfTheDay(day3Temperatures);
-        return formatDate(day1) + getReportLine(day1max, day1min) + formatDate(day2) + getReportLine(day2max, day2min)
-                + formatDate(day3) + getReportLine(day3max, day3min);
+        return SystemUtility.formatDate(day1) + getReportLine(day1max, day1min)
+                + SystemUtility.formatDate(day2) + getReportLine(day2max, day2min)
+                + SystemUtility.formatDate(day3) + getReportLine(day3max, day3min);
     }
 }

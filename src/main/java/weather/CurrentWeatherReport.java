@@ -36,12 +36,12 @@ public class CurrentWeatherReport {
         return data.getString("name");
     }
 
-    public int getCurrentTemperature() throws JSONException {
-        return Integer.valueOf(data.getJSONObject("main").getString("temp"));
+    public double getCurrentTemperature() throws JSONException {
+        return Double.valueOf(data.getJSONObject("main").getString("temp"));
     }
 
     public String getCurrentWeatherReport() throws JSONException {
         return this.getCity() + "\nCoordinates: " + this.getCoordinates()
-                + "\nCurrent temperature: " + this.getCurrentTemperature();
+                + "\nCurrent temperature: " + this.getCurrentTemperature() + "\n";
     }
 }

@@ -34,7 +34,7 @@ public class WeatherProjectTestSystem {
 
     @BeforeClass
     public static void setUpAllTests() throws JSONException {
-        request = new WeatherStatusRequest("Tallinn", "metric");
+        request = new WeatherStatusRequest("Tallinn");
         currentWeatherRep = new CurrentWeatherReport(request);
         forecastReport = new ForecastReport(request);
         exampleTemperatures = new ArrayList<>();
