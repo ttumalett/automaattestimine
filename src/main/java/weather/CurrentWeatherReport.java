@@ -9,22 +9,16 @@ import java.net.HttpURLConnection;
  */
 public class CurrentWeatherReport {
 
-    private static final String API_CALL_URL_BASE = "http://api.openweathermap.org/data/2.5/weather?q=";
-
-    private static final String API_KEY = "2b7472354d73a60236402c0214cd02ce";
-
     private JSONObject data;
 
+    private WeatherStatusRequest request;
+
     public CurrentWeatherReport(WeatherStatusRequest request) throws JSONException {
-        String source = API_CALL_URL_BASE + request.getCityName() + "&units="
-                + request.getUnits() + "&APPID=" + API_KEY;
-        String rawData = getRawWeatherData(source);
-        data = new JSONObject(rawData);
+        this.request = request;
     }
 
-    private String getRawWeatherData(String source) {
-        HttpURLConnection connection = HttpUtility.makeURLConnection(source);
-        return HttpUtility.readDataFromURL(connection);
+    public void setRawWeatherData(String rawData) throws JSONException {
+        data = new JSONObject(rawData);
     }
 
     public String getCoordinates() throws JSONException {
@@ -43,5 +37,9 @@ public class CurrentWeatherReport {
     public String getCurrentWeatherReport() throws JSONException {
         return this.getCity() + "\nCoordinates: " + this.getCoordinates()
                 + "\nCurrent temperature: " + this.getCurrentTemperature() + "\n";
+    }
+
+    public WeatherStatusRequest getRequest() {
+        return request;
     }
 }

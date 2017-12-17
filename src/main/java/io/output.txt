@@ -1,6 +1,0 @@
-Tallinn
-Coordinates: 59.44:24.75
-Current temperature: 5.0
-09/11/2017 |Maximum temperature: 5.55; minimum temperature: 5.06|
-10/11/2017 |Maximum temperature: 7.6; minimum temperature: 5.76|
-11/11/2017 |Maximum temperature: 6.05; minimum temperature: 4.67|

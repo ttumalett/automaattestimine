@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -10,28 +11,25 @@ import java.net.URL;
  */
 public class HttpUtility {
 
-    public static HttpURLConnection makeURLConnection(String url) {
-        try {
-            return (HttpURLConnection) new URL(url).openConnection();
-        } catch (IOException e) {
-            System.out.println("Connection could not be made.");
+    private static final int HTTP_CODE_SUCCESS = 200;
+
+    public static HttpURLConnection makeURLConnection(String url) throws IOException {
+        HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+        if (connection.getResponseCode() != HTTP_CODE_SUCCESS) {
+            throw new IllegalArgumentException("Connection could not be made.");
+        } else {
+            return connection;
         }
-        return null;
     }
 
-    public static String readDataFromURL(HttpURLConnection connection) {
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String data = "";
-            String line;
-            while ((line = reader.readLine()) != null) {
-                data += line;
-            }
-            reader.close();
-            return data;
-        } catch (IOException e) {
-            System.out.println("Data from URL could not be read.");
+    public static String readDataFromURL(HttpURLConnection connection) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String data = "";
+        String line;
+        while ((line = reader.readLine()) != null) {
+            data += line;
         }
-        return null;
+        reader.close();
+        return data;
     }
 }

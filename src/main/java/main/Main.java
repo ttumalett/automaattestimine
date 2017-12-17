@@ -1,9 +1,9 @@
 package main;
+
+import controller.Controller;
+import controller.Writer;
 import org.json.JSONException;
-import utility.SystemUtility;
-import weather.CurrentWeatherReport;
-import weather.ForecastReport;
-import weather.WeatherStatusRequest;
+import java.io.IOException;
 import java.text.ParseException;
 
 /**
@@ -11,11 +11,8 @@ import java.text.ParseException;
  */
 public class Main {
 
-    public static void main(String[] args) throws JSONException, ParseException {
-        WeatherStatusRequest request = new WeatherStatusRequest();
-        CurrentWeatherReport currentWeatherReport = new CurrentWeatherReport(request);
-        ForecastReport forecastReport = new ForecastReport(request);
-        String fullReport = currentWeatherReport.getCurrentWeatherReport() + forecastReport.getForecastReport();
-        SystemUtility.writeFullReportToFile(fullReport);
+    public static void main(String[] args) throws JSONException, ParseException, IOException {
+        Controller weatherController = new Controller(new Writer());
+        weatherController.work();
     }
 }

@@ -3,20 +3,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utility.HttpUtility;
-import utility.SystemUtility;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * A forecast report that gives an overview of the weather of 3 following days.
  */
 public class ForecastReport {
-
-    private static final String API_CALL_URL_BASE = "http://api.openweathermap.org/data/2.5/forecast?q=";
-
-    private static final String API_KEY = "2b7472354d73a60236402c0214cd02ce";
 
     private JSONObject data;
 
@@ -26,19 +23,17 @@ public class ForecastReport {
 
     private String day3;
 
+    private WeatherStatusRequest request;
+
     public ForecastReport(WeatherStatusRequest request) throws JSONException {
-        String source = API_CALL_URL_BASE + request.getCityName() + "&units="
-                + request.getUnits() + "&APPID=" + API_KEY;
-        String rawData = getRawForecastData(source);
+        this.request = request;
+    }
+
+    public void setRawForecastData(String rawData) throws JSONException {
         data = new JSONObject(rawData);
     }
 
-    private String getRawForecastData(String source) {
-        HttpURLConnection connection = HttpUtility.makeURLConnection(source);
-        return HttpUtility.readDataFromURL(connection);
-    }
-
-    public void get3DaysDates() throws JSONException {
+    private void get3DaysDates() throws JSONException, ParseException {
         String dayUnderObservation = "";
         int daysChecked = 0;
         JSONArray array = data.getJSONArray("list");
@@ -79,7 +74,7 @@ public class ForecastReport {
     }
 
     public double getHighestTemperatureOfTheDay(List<Double> temperatures) {
-        double highestTemperature = Double.MIN_VALUE;
+        double highestTemperature = -1 * Double.MAX_VALUE;
         for (Double temperature : temperatures) {
             if (temperature > highestTemperature) {
                 highestTemperature = temperature;
@@ -98,7 +93,7 @@ public class ForecastReport {
         return lowestTemperature;
     }
 
-    public String getReportLine(double max, double min) {
+    private String getReportLine(double max, double min) {
         return " |Maximum temperature: " + max + "; minimum temperature: " + min + "|\n";
     }
 
@@ -113,8 +108,17 @@ public class ForecastReport {
         double day1min = getLowestTemperatureOfTheDay(day1Temperatures);
         double day2min = getLowestTemperatureOfTheDay(day2Temperatures);
         double day3min = getLowestTemperatureOfTheDay(day3Temperatures);
-        return SystemUtility.formatDate(day1) + getReportLine(day1max, day1min)
-                + SystemUtility.formatDate(day2) + getReportLine(day2max, day2min)
-                + SystemUtility.formatDate(day3) + getReportLine(day3max, day3min);
+        return formatDate(day1) + getReportLine(day1max, day1min)
+                + formatDate(day2) + getReportLine(day2max, day2min)
+                + formatDate(day3) + getReportLine(day3max, day3min);
+    }
+
+    private static String formatDate(String day) throws ParseException {
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(day);
+        return new SimpleDateFormat("dd/MM/yyyy").format(date);
+    }
+
+    public WeatherStatusRequest getRequest() {
+        return request;
     }
 }
