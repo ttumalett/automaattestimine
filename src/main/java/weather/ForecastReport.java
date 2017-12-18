@@ -33,7 +33,7 @@ public class ForecastReport {
         data = new JSONObject(rawData);
     }
 
-    private void get3DaysDates() throws JSONException, ParseException {
+    public void get3DaysDates() throws JSONException, ParseException {
         String dayUnderObservation = "";
         int daysChecked = 0;
         JSONArray array = data.getJSONArray("list");
@@ -120,5 +120,17 @@ public class ForecastReport {
 
     public WeatherStatusRequest getRequest() {
         return request;
+    }
+
+    public String getDay1() {
+        return day1;
+    }
+
+    public String getDay2() {
+        return day2;
+    }
+
+    public String getDay3() {
+        return day3;
     }
 }

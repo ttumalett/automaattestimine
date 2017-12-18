@@ -11,6 +11,8 @@ import weatherproject.mock.MockWeatherApi;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -106,5 +108,20 @@ public class MockedApiTester {
                 + "17/12/2017 |Maximum temperature: -0.41; minimum temperature: -1.12|\n"
                 + "18/12/2017 |Maximum temperature: 0.61; minimum temperature: -1.13|\n"
                 + "19/12/2017 |Maximum temperature: 1.77; minimum temperature: -0.07|\n", "Tallinn");
+    }
+
+    @Test
+    public void testFinding3FollowingDaysForForecast() throws JSONException, ParseException {
+        forecastReport.get3DaysDates();
+        assertEquals("2017-12-17", forecastReport.getDay1());
+        assertEquals("2017-12-18", forecastReport.getDay2());
+        assertEquals("2017-12-19", forecastReport.getDay3());
+    }
+
+    @Test
+    public void testGettingTemperaturesOfADay() throws JSONException {
+        List<Double> actual = forecastReport.getTemperaturesOfTheDay("2017-12-17");
+        List<Double> expected = Arrays.asList(-0.41, -1.12);
+        assertEquals(expected, actual);
     }
 }
